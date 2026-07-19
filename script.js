@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const registeredEmailEl = document.getElementById('registered-email');
   const resetBtn = document.getElementById('btn-reset');
   const customAlert = document.getElementById('custom-alert');
-  
+
   // Dashboard / Modal Elements
   const dashboardModal = document.getElementById('dashboard-modal');
   const closeDashboardBtn = document.getElementById('btn-close-dashboard');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('mousemove', (e) => {
     const x = e.clientX;
     const y = e.clientY;
-    
+
     // Pass coordinates to CSS
     document.documentElement.style.setProperty('--mouse-x', `${x}px`);
     document.documentElement.style.setProperty('--mouse-y', `${y}px`);
@@ -160,9 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       registeredEmailEl.textContent = newEntry.email;
       successOverlay.style.display = 'flex';
-      
+
       showToast("Welcome to TheBTechGuy. You're officially on the waitlist!", 'success');
-      
+
       submitBtn.textContent = 'Join Waitlist';
       submitBtn.disabled = false;
     }, 800);
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tableBody.innerHTML = '';
     const query = filterText.toLowerCase().trim();
 
-    const filtered = entries.filter(item => 
+    const filtered = entries.filter(item =>
       item.firstName.toLowerCase().includes(query) ||
       item.lastName.toLowerCase().includes(query) ||
       item.email.toLowerCase().includes(query) ||
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function escapeHTML(str) {
     if (!str) return '';
-    return str.replace(/[&<>'"]/g, 
+    return str.replace(/[&<>'"]/g,
       tag => ({
         '&': '&amp;',
         '<': '&lt;',
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (entries.length === 0) return;
 
     let csv = 'data:text/csv;charset=utf-8,First Name,Last Name,Email,College / Company,Role,SignUp Date,Receive Updates\n';
-    
+
     entries.forEach(item => {
       const receiveUpdates = item.newsletter ? 'YES' : 'NO';
       const row = `"${item.firstName.replace(/"/g, '""')}","${item.lastName.replace(/"/g, '""')}","${item.email.replace(/"/g, '""')}","${item.college.replace(/"/g, '""')}","${item.role}","${item.date}","${receiveUpdates}"`;
@@ -302,3 +302,122 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Waitlist entries exported to CSV successfully!');
   });
 });
+
+
+
+/* ==========================================================================
+   TheBTechGuy — Hero interactions
+   1. Staggered reveal for [data-reveal] elements
+   2. Subtle cursor-follow parallax on the orbit visual
+   3. Scroll cue click handler
+   All motion respects prefers-reduced-motion.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* -------------------------------------------------------------------- */
+  /* 1. Reveal sequence                                                    */
+  /* -------------------------------------------------------------------- */
+
+  var revealEls = document.querySelectorAll('[data-reveal]');
+
+  revealEls.forEach(function (el) {
+    var delay = el.getAttribute('data-delay') || 0;
+    el.style.setProperty('--d', delay);
+  });
+
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    revealEls.forEach(function (el) {
+      observer.observe(el);
+    });
+  } else {
+    // No IO support, or user prefers reduced motion: show immediately.
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* 2. Cursor parallax on the orbit visual                                */
+  /* -------------------------------------------------------------------- */
+
+  var hero = document.getElementById('hero');
+  var orbitField = document.getElementById('orbitField');
+  var isTouch = window.matchMedia('(hover: none)').matches;
+  var rafId = null;
+  var targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+  if (hero && orbitField && !reduceMotion && !isTouch) {
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      var relX = (e.clientX - rect.left) / rect.width - 0.5;
+      var relY = (e.clientY - rect.top) / rect.height - 0.5;
+
+      targetX = relX * 16; // max px shift
+      targetY = relY * 16;
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(applyParallax);
+      }
+    });
+
+    hero.addEventListener('mouseleave', function () {
+      targetX = 0;
+      targetY = 0;
+      if (!rafId) {
+        rafId = requestAnimationFrame(applyParallax);
+      }
+    });
+  }
+
+  function applyParallax() {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+
+    orbitField.style.transform =
+      'translate(' + currentX.toFixed(2) + 'px, ' + currentY.toFixed(2) + 'px)';
+
+    if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+      rafId = requestAnimationFrame(applyParallax);
+    } else {
+      rafId = null;
+    }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* 3. Scroll cue                                                         */
+  /* -------------------------------------------------------------------- */
+
+  var scrollCue = document.getElementById('scrollCue');
+
+  if (scrollCue) {
+    scrollCue.addEventListener('click', function () {
+      var next = hero.nextElementSibling;
+      var target = next || null;
+
+      if (target) {
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      }
+    });
+  }
+})();
