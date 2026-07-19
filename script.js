@@ -149,23 +149,54 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Persist
-    entries.unshift(newEntry);
-    localStorage.setItem('tbg_waitlist_entries', JSON.stringify(entries));
-
     // Submit UI Feedback
     submitBtn.textContent = 'Registering...';
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-      registeredEmailEl.textContent = newEntry.email;
-      successOverlay.style.display = 'flex';
+    // Send data to endpoint
+    fetch('https://thebtechguy.com/api/waitlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        firstName: newEntry.firstName,
+        lastName: newEntry.lastName,
+        email: newEntry.email,
+        college: newEntry.college,
+        role: newEntry.role,
+        newsletter: newEntry.newsletter
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json().catch(() => ({}));
+      })
+      .then(() => {
+        // Save locally to reflect in the Admin Waitlist Console
+        entries.unshift(newEntry);
+        localStorage.setItem('tbg_waitlist_entries', JSON.stringify(entries));
 
-      showToast("Welcome to TheBTechGuy. You're officially on the waitlist!", 'success');
+        registeredEmailEl.textContent = newEntry.email;
+        successOverlay.style.display = 'flex';
+        showToast("Welcome to TheBTechGuy. You're officially on the waitlist!", 'success');
+      })
+      .catch(error => {
+        console.error('Error submitting waitlist:', error);
+        // Fallback: If connection fails, still allow saving locally so data isn't lost, but alert user
+        entries.unshift(newEntry);
+        localStorage.setItem('tbg_waitlist_entries', JSON.stringify(entries));
 
-      submitBtn.textContent = 'Join Waitlist';
-      submitBtn.disabled = false;
-    }, 800);
+        registeredEmailEl.textContent = newEntry.email;
+        successOverlay.style.display = 'flex';
+        showToast("Secured locally! Offline copy cached.", 'warning');
+      })
+      .finally(() => {
+        submitBtn.textContent = 'Join Waitlist';
+        submitBtn.disabled = false;
+      });
   });
 
   resetBtn.addEventListener('click', () => {
@@ -312,6 +343,13 @@ document.addEventListener('DOMContentLoaded', () => {
    3. Scroll cue click handler
    All motion respects prefers-reduced-motion.
    ========================================================================== */
+/* ==========================================================================
+   TheBTechGuy — Hero interactions
+   1. Staggered reveal for [data-reveal] elements
+   2. Subtle cursor-follow parallax on the orbit visual
+   3. Rising ember particle field (randomised, reduced-motion aware)
+   4. Scroll cue click handler
+   ========================================================================== */
 
 (function () {
   'use strict';
@@ -346,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
       observer.observe(el);
     });
   } else {
-    // No IO support, or user prefers reduced motion: show immediately.
     revealEls.forEach(function (el) {
       el.classList.add('is-visible');
     });
@@ -368,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var relX = (e.clientX - rect.left) / rect.width - 0.5;
       var relY = (e.clientY - rect.top) / rect.height - 0.5;
 
-      targetX = relX * 16; // max px shift
+      targetX = relX * 16;
       targetY = relY * 16;
 
       if (!rafId) {
@@ -400,7 +437,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* -------------------------------------------------------------------- */
-  /* 3. Scroll cue                                                         */
+  /* 3. Ember particle field                                               */
+  /* -------------------------------------------------------------------- */
+
+  var emberContainer = document.getElementById('heroEmbers');
+
+  if (emberContainer && !reduceMotion) {
+    var EMBER_COUNT = window.innerWidth < 640 ? 12 : 24;
+
+    for (var i = 0; i < EMBER_COUNT; i++) {
+      var ember = document.createElement('span');
+      ember.className = 'ember';
+
+      var size = (Math.random() * 2.5 + 1.5).toFixed(1) + 'px';
+      var left = (Math.random() * 100).toFixed(2) + '%';
+      var duration = (Math.random() * 7 + 7).toFixed(1) + 's';
+      var delay = (Math.random() * -14).toFixed(1) + 's';
+      var drift = (Math.random() * 60 - 30).toFixed(0) + 'px';
+
+      ember.style.setProperty('--size', size);
+      ember.style.setProperty('--dur', duration);
+      ember.style.setProperty('--delay', delay);
+      ember.style.setProperty('--drift', drift);
+      ember.style.left = left;
+
+      emberContainer.appendChild(ember);
+    }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* 4. Scroll cue                                                         */
   /* -------------------------------------------------------------------- */
 
   var scrollCue = document.getElementById('scrollCue');

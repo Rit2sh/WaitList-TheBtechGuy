@@ -35,10 +35,13 @@
 
     <!-- Ambient backdrop -->
     <div class="hero-backdrop" aria-hidden="true">
+      <div class="hero-aurora"></div>
       <div class="hero-blueprint"></div>
       <div class="hero-glow hero-glow--a"></div>
       <div class="hero-glow hero-glow--b"></div>
       <div class="hero-scanline"></div>
+      <div class="hero-noise"></div>
+      <div class="hero-embers" id="heroEmbers"></div>
     </div>
 
     <div class="hero-container">
@@ -47,12 +50,18 @@
 
         <p class="hero-eyebrow" data-reveal data-delay="0">
           <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-          Where India's Builders Build
+          <span class="kicker-word" style="--k:0;">Build</span>
+          <span class="kicker-sep">·</span>
+          <span class="kicker-word" style="--k:1;">Launch</span>
+          <span class="kicker-sep">·</span>
+          <span class="kicker-word" style="--k:2;">Fund</span>
+          <span class="kicker-sep">·</span>
+          <span class="kicker-word" style="--k:3;">Grow</span>
         </p>
 
         <h1 class="hero-title" data-reveal data-delay="1">
-          Build.<br>
-          Launch. Fund. <span class="hero-title-accent">Grow.</span>
+          Where India's<br>
+          Builders <span class="hero-title-accent">Build.</span>
         </h1>
 
         <p class="hero-subtitle" data-reveal data-delay="2">
@@ -98,6 +107,27 @@
           </div>
 
           <div class="orbit-track" aria-hidden="true">
+
+            <!-- Connector lines: base + animated energy pulse per spoke -->
+            <svg class="orbit-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <g class="orbit-lines-base">
+                <line x1="50" y1="50" x2="100" y2="50"></line>
+                <line x1="50" y1="50" x2="75" y2="93.3"></line>
+                <line x1="50" y1="50" x2="25" y2="93.3"></line>
+                <line x1="50" y1="50" x2="0" y2="50"></line>
+                <line x1="50" y1="50" x2="25" y2="6.7"></line>
+                <line x1="50" y1="50" x2="75" y2="6.7"></line>
+              </g>
+              <g class="orbit-lines-pulse">
+                <line x1="50" y1="50" x2="100" y2="50" style="--pd:0s;"></line>
+                <line x1="50" y1="50" x2="75" y2="93.3" style="--pd:-1.3s;"></line>
+                <line x1="50" y1="50" x2="25" y2="93.3" style="--pd:-2.6s;"></line>
+                <line x1="50" y1="50" x2="0" y2="50" style="--pd:-3.9s;"></line>
+                <line x1="50" y1="50" x2="25" y2="6.7" style="--pd:-5.2s;"></line>
+                <line x1="50" y1="50" x2="75" y2="6.7" style="--pd:-6.5s;"></line>
+              </g>
+            </svg>
+
             <div class="orbit-node" style="--angle:0deg;">
               <div class="orbit-node-inner" data-label="Students"><span class="orbit-dot"></span></div>
             </div>
@@ -642,21 +672,26 @@
   <section class="founder-message">
     <div class="container">
       <div class="founder-message-card">
-        <h3 class="founder-title">A Message from the Founder</h3>
-        <div class="founder-quote">
-          <p style="margin-bottom: 1rem;">Hi,</p>
-          <p style="margin-bottom: 1.5rem;">I'm <strong>Ritesh Chauhan</strong>, Founder of
-            <strong>TheBTechGuy</strong>.
-          </p>
-          <p style="margin-bottom: 1.5rem;">I started this platform after seeing talented students, developers, and
-            founders struggle to find opportunities because everything was scattered across different platforms.</p>
-          <p>Our mission is simple: Build one ecosystem where every builder can launch startups, find cofounders,
-            showcase projects, discover opportunities, connect with investors, and grow. We're building India's Builder
-            Network. Thank you for believing in this vision. Let's build the future together.</p>
+        <div class="founder-image-wrapper-card">
+          <div class="founder-image-container">
+            <img src="ritesh.png" alt="Ritesh Chauhan" class="founder-photo">
+          </div>
         </div>
-        <div class="founder-sig">
-          <img src="logo.jpg" alt="Ritesh Chauhan" class="founder-avatar">
-          <div>
+        <div class="founder-info-column">
+          <h3 class="founder-title">A Message from the Founder</h3>
+          <div class="founder-quote">
+            <p style="margin-bottom: 1rem;">Hi,</p>
+            <p style="margin-bottom: 1rem;">I'm <strong>Ritesh Chauhan</strong>, Founder of
+              <strong>TheBTechGuy</strong>.
+            </p>
+            <p style="margin-bottom: 1rem;">I started this platform after seeing talented students, developers, and
+              founders struggle to find opportunities because everything was scattered across different platforms.</p>
+            <p style="margin-bottom: 1rem;">Our mission is simple: Build one ecosystem where every builder can launch
+              startups, find cofounders, showcase projects, discover opportunities, connect with investors, and grow.
+              We're building India's Builder Network.</p>
+            <p>Thank you for believing in this vision. Let's build the future together.</p>
+          </div>
+          <div class="founder-sig-detail">
             <div class="founder-name">Ritesh Chauhan</div>
             <div class="founder-role">Founder, TheBTechGuy</div>
           </div>
